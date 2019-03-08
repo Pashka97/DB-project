@@ -1,0 +1,49 @@
+CREATE TABLE Movie (
+	ID INTEGER PRIMARY KEY,
+	Title VARCHAR(50) not null,
+	Year INTEGER CHECK Year >= 0,
+	GenreId INTEGER not null,
+	AgeRatingId Integer not null,
+	OverallRating Integer not null,
+	CONSTRANT Movie_GenreId_fkey FOREIGN KEY (GenreId) REFERENCES Genre (ID)
+);
+
+CREATE TABLE Genre (
+	ID INTEGER PRIMARY KEY,
+	Name VARCHAR(20) not null
+);
+
+CREATE TABLE MovieTag (
+	MovieId INTEGER PRIMARY KEY,
+	TagId INTEGER not null,
+	CONSTRAINT MovieTag_MovieId_fkey FOREIGN KEY (MovieId) REFERENCES Movie (ID),
+	CONSTRAINT MovieTag_TagId_fkey FOREIGN KEY (TagId) REFERENCES Tag (ID)
+)
+
+CREATE TABLE Tag (
+	ID INTEGER PRIMARY KEY,
+	Name VARCHAR(30) not null
+)
+
+CREATE TABLE AgeRating (
+	ID INTEGER PRIMARY KEY,
+	Rating VARCHAR(5) not null
+)
+
+CREATE TABLE Review (
+	ID INTEGER PRIMARY KEY,
+	MovieId INTEGER not null,
+	UserId INTEGER not null,
+	ScoreId INTEGER not null,
+	Comment VARCHAR(500),
+	RatingId INTEGER not null,
+	CONSTRAINT Review_MovieId_fkey FOREIGN KEY (MovieId) REFERENCES Movie (ID),
+	CONSTRAINT Review_UserId_fkey FOREIGN KEY (UserId) REFERENCES UserAccount (ID),
+	CONSTRAINT Review_ScoreId_fkey FOREIGN KEY (ScoreId) REFERENCES Score (ID)
+)
+
+CREATE TABLE Score (
+	ID INTEGER PRIMARY KEY,
+	Name VARCHAR(20)
+)
+
