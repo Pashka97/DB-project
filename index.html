@@ -2,21 +2,36 @@
 <html>
 <body>
 
-<a href="user.html">Sign Up/Log in</a>
+<a href="user">Sign Up/Log in</a>
     
 <h1>Home Page</h1>
 
 <div class="divSearch">
-    <form>
+    <form id= "searchForm">
       Movie Name:<br>
-      <input type="text" name="movie name"><br>
-      Genre:<br>
+      <input type="text" id="movieName"><br>
+      Year:<br>
       <select>
+          <option value= "none">Unknown</option>
+      </select>
+         <input type="number" id="year" min="1910" max="2019"><br>
+      AgeRating<br>
+      <select id="ageRating">
+        <option value="none">Unknown</option>
+        <option value="G">G</option>
+        <option value="PG">PG</option>
+        <option value="PG13">PG13</option>
+        <option value="R">R</option>
+        <option value="NC17">NC17</option>
+      </select>
+        <br>
+      Genre:<br>
+      <select id="genre">
           <option value="none">None</option>
           <option value="action">Action</option>
           <option value="comedy">comedy</option>
       </select>
-        <br>
+         <br>
       Composite: 0-100<br>
       Rating
       <select>
@@ -24,12 +39,25 @@
           <option value=">">></option>
           <option value="<"><</option>
       </select>
-        <input type="number" name="compositeScore" min="0" max="100"><br>
+        <input type="number" id="compositeScore" min="0" max="100"><br>
     </form>
     
     <br>
     <!-- Sean add function here -->
     <button onclick="msearchFunction()">Search</button>
+    <script>
+        function msearchFunction() {
+            var name= document.getElementById("movieName").value;
+            var year= document.getElementById("year").value;
+            var ageRating= document.getElementById("ageRating").value;
+            var genre= document.getElementById("genre").value;
+            var compositeScore= document.getElementById("compositeScore").value;
+            var url= `${name}&${year}&${ageRating}&${genre}&${compositeScore}`;
+            //console.log(url);
+            window.location.pathname= `${url}`;
+        }
+    </script>
+    
 </div>  
 
     
@@ -38,7 +66,7 @@
 <div class="divResults">
     <!-- List of results to populate 1 -->
     <ul>
-      <li><a href="movie.html">Result_1</a></li>
+      <li><a href="movieView">Result_1</a></li>
     </ul>
 </div>   
     
