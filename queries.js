@@ -6,7 +6,7 @@ const pool = new Pool({
   user: 'me',
   host: 'localhost',
   database: 'api',
-  password: 'wrong_pass',
+  password: 'passwerd',
   port: 5432,
 })
 /*
@@ -103,7 +103,6 @@ const getRecent = (request, response, next) =>  {
   });
   next();  //get top rated
 }
-
 
 //input: information of user to be added
 const createUser = (request, response) => {

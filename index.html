@@ -53,8 +53,23 @@
             var genre= document.getElementById("genre").value;
             var compositeScore= document.getElementById("compositeScore").value;
             var url= `${name}&${year}&${ageRating}&${genre}&${compositeScore}`;
-            //console.log(url);
-            window.location.pathname= `${url}`;
+            //window.location.pathname= `${url}`;
+            console.log(`${url}`);
+            var xhr= new XMLHttpRequest();
+            xhr.open("GET", `${url}`);
+            xhr.onload= function(e) {
+                if (xhr.readyState === 4) {
+                 if (xhr.status === 200) {
+                    console.log(xhr.responseText);
+                 } else {
+                    console.error(xhr.statusText);
+                 }
+                }
+            };
+            xhr.onerror= function(e) {
+                console.error(xhr.statusText);
+            };
+            xhr.send(null);
         }
     </script>
     
@@ -66,7 +81,7 @@
 <div class="divResults">
     <!-- List of results to populate 1 -->
     <ul>
-      <li><a href="movieView">Result_1</a></li>
+      <li><a href="/movieView">Result_1</a></li>
     </ul>
 </div>   
     
