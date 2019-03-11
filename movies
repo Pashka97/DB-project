@@ -1,0 +1,17 @@
+INSERT INTO Genre (Name)
+VALUES ('Action', 'Comedy', 'Romance', 'Adventure', 'Horror', 'Science Fiction');
+
+INSERT INTO AgeRating (Rating)
+VALUES ('G', 'PG', 'PG', 'R');
+
+INSERT INTO Movie (Title, Year, GenreId, AgeRatingID, OverallRating)
+VALUES ('Captain Marvel', 2019, 6, 'PG13', 0),
+       ('Harry Potter', 2001, 4, 'G', 0),
+       ('Apollo 11', 2019, 6, 'G', 0),
+       ('Pet', 2017, 2, 'G', 0),
+       ('The Bourne Identity', 2002, 1, 'PG', 0);
+
+
+
+
+
