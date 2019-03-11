@@ -1,8 +1,19 @@
 INSERT INTO Genre (Name)
-VALUES ('Action', 'Comedy', 'Romance', 'Adventure', 'Horror', 'Science Fiction', 'Drama', 'Animation');
+VALUES ('Action'), 
+       ('Comedy'), 
+       ('Romance'), 
+       ('Adventure'), 
+       ('Horror'), 
+       ('Science Fiction'), 
+       ('Drama'), 
+       ('Animation');
 
 INSERT INTO AgeRating (Rating)
-VALUES ('G', 'PG', 'PG', 'R', 'NC17');
+VALUES ('G'), 
+       ('PG'), 
+       ('PG13'), 
+       ('R'), 
+       ('NC17');
 
 INSERT INTO Movie (Title, Year, GenreId, AgeRatingID, OverallRating)
 VALUES ('Captain Marvel', 2019, 6, 'PG13', 0),
