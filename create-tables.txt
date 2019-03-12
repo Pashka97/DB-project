@@ -9,39 +9,39 @@ CREATE TABLE UserAccount (
 );
 
 CREATE TABLE Movie (
-	ID INTEGER PRIMARY KEY,
+	ID SERIAL PRIMARY KEY,
 	Title VARCHAR(50) not null,
 	Year INTEGER not null,
 	GenreId INTEGER not null,
-	AgeRatingId Integer not null,
-	OverallRating Integer not null,
+	AgeRatingId INTEGER not null,
+	OverallRating INTEGER,
 	CONSTRAINT Movie_GenreId_fkey FOREIGN KEY (GenreId) REFERENCES Genre (ID)
 );
 
 CREATE TABLE Genre (
-	ID INTEGER PRIMARY KEY,
+	ID SERIAL PRIMARY KEY,
 	Name VARCHAR(20) not null
 );
 
 CREATE TABLE MovieTag (
-	MovieId INTEGER PRIMARY KEY,
+	MovieId SERIAL PRIMARY KEY,
 	TagId INTEGER not null,
 	CONSTRAINT MovieTag_MovieId_fkey FOREIGN KEY (MovieId) REFERENCES Movie (ID),
 	CONSTRAINT MovieTag_TagId_fkey FOREIGN KEY (TagId) REFERENCES Tag (ID)
 );
 
 CREATE TABLE Tag (
-	ID INTEGER PRIMARY KEY,
+	ID SERIAL PRIMARY KEY,
 	Name VARCHAR(30) not null
 );
 
 CREATE TABLE AgeRating (
-	ID INTEGER PRIMARY KEY,
+	ID SERIAL PRIMARY KEY,
 	Rating VARCHAR(5) not null
 );
 
 CREATE TABLE Review (
-	ID INTEGER PRIMARY KEY,
+	ID SERIAL PRIMARY KEY,
 	MovieId INTEGER not null,
 	UserId INTEGER not null,
 	ScoreId INTEGER,
@@ -53,7 +53,7 @@ CREATE TABLE Review (
 );
 
 CREATE TABLE Score (
-	ID INTEGER PRIMARY KEY,
+	ID SERIAL PRIMARY KEY,
 	Name VARCHAR(20)
 );
 
