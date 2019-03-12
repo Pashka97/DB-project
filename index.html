@@ -11,8 +11,10 @@
       Movie Name:<br>
       <input type="text" id="movieName"><br>
       Year:<br>
-      <select>
+      <select id="yearPref">
           <option value= "none">Unknown</option>
+          <option value=">">></option>
+          <option value="<"><</option>
       </select>
          <input type="number" id="year" min="1910" max="2019"><br>
       AgeRating<br>
@@ -52,6 +54,14 @@
             var ageRating= document.getElementById("ageRating").value;
             var genre= document.getElementById("genre").value;
             var compositeScore= document.getElementById("compositeScore").value;
+
+            var query = [];
+            if(name != "")
+            {
+                query.push(name);
+            }
+
+            
             var url= `${name}&${year}&${ageRating}&${genre}&${compositeScore}`;
             //window.location.pathname= `${url}`;
             console.log(`${url}`);
@@ -59,8 +69,44 @@
             xhr.open("GET", `${url}`);
             xhr.onload= function(e) {
                 if (xhr.readyState === 4) {
+                 //Pavel code goes here
+                 //parse xhr.responseText and add to list
                  if (xhr.status === 200) {
-                    console.log(xhr.responseText);
+                    var queryJSON = JSON.parse(xhr.responseText);
+                    console.log(JSON.stringify(queryJSON));
+
+                    var ulist = document.getElementById("searchResults");
+
+                    while(ulist.childNodes.length > 0)
+                    {
+                      ulist.removeChild(ulist.childNodes[0]);
+                    }
+
+                    var newItem = document.createElement("li");
+                    ulist.appendChild(newItem);
+                    var a = document.createElement("a");
+                    a.textContent = "Movie Name\t Composite Rating";
+                    newItem.appendChild(a);
+                    ulist.appendChild(newItem);
+
+
+                    for(var i = 0; i < queryJSON.length; i++)
+                    {
+                      var movieStr = queryJSON[i].title + " " + queryJSON[i].overallrating;
+
+                      var newItem = document.createElement("li");
+                      ulist.appendChild(newItem);
+
+                      var a = document.createElement("a");
+                      a.textContent = movieStr;
+                      /*
+                        Sean change href to whatever you need to make it work
+                      */
+                      a.setAttribute('href', "/movieView:" + queryJSON[i].title);
+                      newItem.appendChild(a);
+                      ulist.appendChild(newItem);
+                    }
+
                  } else {
                     console.error(xhr.statusText);
                  }
@@ -80,8 +126,7 @@
     
 <div class="divResults">
     <!-- List of results to populate 1 -->
-    <ul>
-      <li><a href="/movieView">Result_1</a></li>
+    <ul id="searchResults">
     </ul>
 </div>   
     
