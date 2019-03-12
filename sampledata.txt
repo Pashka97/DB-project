@@ -1,0 +1,37 @@
+INSERT INTO Genre (Name)
+VALUES ('Action'), 
+       ('Comedy'), 
+       ('Romance'), 
+       ('Adventure'), 
+       ('Horror'), 
+       ('Science Fiction'), 
+       ('Drama'), 
+       ('Animation');
+
+INSERT INTO AgeRating (Rating)
+VALUES ('G'), 
+       ('PG'), 
+       ('PG13'), 
+       ('R'), 
+       ('NC17');
+
+INSERT INTO Movie (Title, Year, GenreId, AgeRatingID, OverallRating)
+VALUES ('Captain Marvel', 2019, 6, 3, 0),
+       ('Harry Potter', 2001, 4, 1, 100),
+       ('Apollo 11', 2019, 6, 1, 0),
+       ('Pet', 2017, 2, 1, 70),
+       ('The Bourne Identity', 2002, 1, 2, 80),
+       ('Time Rush', 2016, 1, 1, 70),
+       ('Time Rush', 2016, 4, 1, 70),
+       ('Robo-Dog', 2016, 6, 1, 70),
+       ('The Forest', 2016, 5, 3, 60),
+       ('The Choice', 2016, 3, 2, 60),
+       ('Zootopia', 2016, 8, 5, 90),
+       ('Zootopia', 2016, 2, 4, 90),
+       ('The Mermaid', 2016, 2, 2, 80),
+       ('The Mermaid', 2016, 6, 2, 80);
+
+
+
+
+
