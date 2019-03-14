@@ -11,15 +11,15 @@
       Movie Name:<br>
       <input type="text" id="movieName"><br>
       Year:<br>
-      <select id="yearPref">
-          <option value= "none">Unknown</option>
-          <option value=">">></option>
-          <option value="<"><</option>
+      <select id="yearConstraint">
+          <option value= "YP_ANY">No preference</option>
+          <option value=">">>=</option>
+          <option value="<"><=</option>
       </select>
          <input type="number" id="year" min="1910" max="2019"><br>
-      AgeRating<br>
+      Rating:<br>
       <select id="ageRating">
-        <option value="none">Unknown</option>
+        <option value="AR_ANY">Any</option>
         <option value="G">G</option>
         <option value="PG">PG</option>
         <option value="PG13">PG13</option>
@@ -29,17 +29,22 @@
         <br>
       Genre:<br>
       <select id="genre">
-          <option value="none">None</option>
-          <option value="action">Action</option>
-          <option value="comedy">comedy</option>
+          <option value="G_ANY">Any</option>
+          <option value="Action">Action</option>
+          <option value="Comedy">Comedy</option>
+          <option value="Romance">Romance</option>
+          <option value="Adventure">Adventure</option>
+          <option value="Horror">Horror</option>
+          <option value="SciFi">Science Fiction</option>
+          <option value="Drama">Drama</option>
+          <option value="Animated">Animated</option>
       </select>
          <br>
-      Composite: 0-100<br>
-      Rating
-      <select>
-          <option value="none">No preference</option>
-          <option value=">">></option>
-          <option value="<"><</option>
+      Composite Rating (0-100):<br>
+      <select id="compositeRatingConstraint">
+          <option value="CR_ANY">No preference</option>
+          <option value=">">>=</option>
+          <option value="<"><=</option>
       </select>
         <input type="number" id="compositeScore" min="0" max="100"><br>
     </form>
@@ -50,9 +55,11 @@
     <script>
         function msearchFunction() {
             var name= document.getElementById("movieName").value;
+            var yearConstraint= document.getElementById("yearConstraint").value;
             var year= document.getElementById("year").value;
             var ageRating= document.getElementById("ageRating").value;
             var genre= document.getElementById("genre").value;
+            var compositeRatingConstraint= document.getElementById("compositeRatingConstraint").value;
             var compositeScore= document.getElementById("compositeScore").value;
 
             var query = [];
@@ -62,7 +69,7 @@
             }
 
             
-            var url= `${name}&${year}&${ageRating}&${genre}&${compositeScore}`;
+            var url= `${name}&${yearConstraint}&${year}&${ageRating}&${genre}&${compositeRatingConstraint}&${compositeScore}`;
             //window.location.pathname= `${url}`;
             console.log(`${url}`);
             var xhr= new XMLHttpRequest();
@@ -102,7 +109,7 @@
                       /*
                         Sean change href to whatever you need to make it work
                       */
-                      a.setAttribute('href', "/movieView:" + queryJSON[i].title);
+                      a.setAttribute('href', "/movieView/" + parseInt(queryJSON[i].id));
                       newItem.appendChild(a);
                       ulist.appendChild(newItem);
                     }

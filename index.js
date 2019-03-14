@@ -18,7 +18,7 @@ app.get('/', db.serveIndex, db.getRecent, db.getTopRated);
 app.get('/user', db.serveUser);
 
 //retrieve a list of search results as filling in search form
-app.get('/:title&:year&:ageRating&:genre&:overallRating', db.getSearchResults);
+app.get('/:title&:yearConstraint&:year&:ageRating&:genre&:overallRatingConstraint&:overallRating', db.getSearchResults);
 
 /****** TEST interface with user ******/
 //app.get('/users', db.getUsers);
@@ -40,8 +40,11 @@ app.get('/movieView/:movieId', db.getMovie);
 //app.post('/movieView/:MovieId/:UserId/:RatingId/:comment', db.createReview);
 app.post('/movieView/:score/:id', db.rateComment);
 
+app.set('views', './views');
+app.set('view engine', 'pug');
+
 app.listen(port, () => {
-  console.log(`App running on port ${port}.`);
+  console.log(`FAMR running on port ${port}.`);
 })
 
 // root: 5 search forms, search results, table of select movies

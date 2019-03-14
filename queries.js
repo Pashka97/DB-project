@@ -1,12 +1,13 @@
 const http= require('http');
 const path= require('path');
+const pug= require('pug');
 
 const Pool = require('pg').Pool
 const pool = new Pool({
-  user: 'postgres',
+  user: 'me',
   host: 'localhost',
-  database: 'postgres',
-  password: 'toor',
+  database: 'api',
+  password: 'passwerd',
   port: 5432,
 })
 /*
@@ -119,16 +120,20 @@ const createUser = (request, response) => {
 
 //input: movie searched for
 const getMovie = (req, res) => {
-  const id = parseInt(req.params.movie_id)
+  const id = parseInt(req.params.movieId);
+ // console.log(id)
   pool.query(
-             `SELECT Title, Year, Genre.Name AS Genre, AgeRating.Rating AS Rating
+             `SELECT Title, Year, Genre.Name AS Genre, AgeRating.Rating AS Rating, overallRating
               FROM Movie JOIN Genre ON (genreid = genre.id)
                          JOIN AgeRating ON (agerating.id = ageratingid)
               WHERE Movie.ID = $1`, [id], (error, results) => {
               if (error) {
                 throw error
               }
-              response.status(200).json(results.rows)
+              const queryRes= results.rows[0]
+              console.log(queryRes)
+              res.render('index', {compositeScore: queryRes.overallrating, movieTitle: queryRes.title,
+                         year: queryRes.year, genre: queryRes.genre, rating: queryRes.rating});
             })
 }
 
@@ -136,16 +141,56 @@ const getMovie = (req, res) => {
 const getSearchResults= (req, res) => {
   console.log(req.params);
   const title= req.params.title;
+  const yearConstraint= req.params.yearConstraint;
   const year= parseInt(req.params.year);
   const genre= req.params.genre;
   const ageRating= req.params.ageRating;
+  const overallRatingConstraint= req.params.overallRatingConstraint;
   const overallRating= parseInt(req.params.overallRating);
-  pool.query(
-    `SELECT Title, Year, genre, rating as agerating, overallrating
-    FROM Movie JOIN Genre ON (genre.id = genreid)
-               JOIN agerating ON (agerating.id = ageratingid)
-    WHERE title= $1 OR year= $2 OR genre.name= $3 OR agerating.rating= $4 OR overallrating= $5`,
-    [title, year, genre, ageRating, overallRating], (error, results) => {
+  var text, psqlParams;
+//  console.log(yearConstraint);
+ // console.log(overallRatingConstraint);
+  if(yearConstraint == '>' && overallRatingConstraint == '>') {
+    text= `SELECT movie.id as ID, Title, Year, genre, rating as agerating, overallrating
+       FROM Movie JOIN Genre ON (genre.id = genreid)
+                  JOIN agerating ON (agerating.id = ageratingid)
+       WHERE (lower(title) = lower($1) AND year >= $2 AND genre.name= $3 AND agerating.rating= $4 AND overallrating >= $5)
+       OR (lower(title) = lower($1)) OR (genre.name = $3 AND overallrating >= $5) OR (genre.name = $3)`
+       psqlParams= [title, year, genre, ageRating, overallRating];
+  }
+  else if(yearConstraint == '>' && overallRatingConstraint == '<') {
+    text= `SELECT movie.id as ID, Title, Year, genre, rating as agerating, overallrating
+       FROM Movie JOIN Genre ON (genre.id = genreid)
+                  JOIN agerating ON (agerating.id = ageratingid)
+       WHERE (lower(title) = lower($1) AND year >= $2 AND genre.name= $3 AND agerating.rating= $4 AND overallrating <= $5)
+       OR (lower(title) = lower($1)) OR (genre.name = $3 AND overallrating <= $5) OR (genre.name = $3)`
+       psqlParams= [title, year, genre, ageRating, overallRating];
+  }
+  else if(yearConstraint == '<' && overallRatingConstraint == '>') {
+    text= `SELECT movie.id as ID, Title, Year, genre, rating as agerating, overallrating
+       FROM Movie JOIN Genre ON (genre.id = genreid)
+                  JOIN agerating ON (agerating.id = ageratingid)
+       WHERE (lower(title) = lower($1) AND year <= $2 AND genre.name= $3 AND agerating.rating= $4 AND overallrating >= $5)
+       OR (lower(title) = lower($1)) OR (genre.name = $3 AND overallrating >= $5) OR (genre.name = $3)`
+       psqlParams= [title, year, genre, ageRating, overallRating];
+  }
+  else if(yearConstraint == '<' && overallRatingConstraint == '<') {
+    text = `SELECT movie.id as ID, Title, Year, genre, rating as agerating, overallrating
+       FROM Movie JOIN Genre ON (genre.id = genreid)
+                  JOIN agerating ON (agerating.id = ageratingid)
+       WHERE (lower(title) = lower($1) AND year <= $2 AND genre.name= $3 AND agerating.rating= $4 AND overallrating <= $5)
+       OR (lower(title) = lower($1)) OR (genre.name = $3 AND overallrating <= $5) OR (genre.name = $3)`
+       psqlParams= [title, year, genre, ageRating, overallRating];
+  }
+  else {
+    text= `SELECT movie.id as ID, Title, Year, genre, rating as agerating, overallrating
+       FROM Movie JOIN Genre ON (genre.id = genreid)
+                  JOIN agerating ON (agerating.id = ageratingid)
+       WHERE (lower(title) = lower($1) AND genre.name= $2 AND agerating.rating= $3)
+       OR (lower(title) = lower($1)) OR (genre.name = $2)`
+       psqlParams= [title, genre, ageRating];
+  }
+  pool.query(text, psqlParams, (error, results) => {
       if (error) {
         throw error
       }
