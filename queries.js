@@ -10,16 +10,7 @@ const pool = new Pool({
   password: 'passwerd',
   port: 5432,
 })
-/*
-const getUsers = (request, response) => {
-  pool.query('SELECT * FROM useraccount ORDER BY id ASC', (error, results) => {
-    if (error) {
-      throw error
-    }
-    response.status(200).json(results.rows)
-  })
-}
-*/
+
 
 const serveIndex= (req, res, next) => {
   res.sendFile(path.join(__dirname + '/index.html'));
@@ -132,7 +123,7 @@ const getMovie = (req, res) => {
               }
               const queryRes= results.rows[0]
               console.log(queryRes)
-              res.render('index', {compositeScore: queryRes.overallrating, movieTitle: queryRes.title,
+              res.render('index', {movieId: id, compositeScore: queryRes.overallrating, movieTitle: queryRes.title,
                          year: queryRes.year, genre: queryRes.genre, rating: queryRes.rating});
             })
 }
@@ -199,32 +190,6 @@ const getSearchResults= (req, res) => {
   )
 }
 
-/*
-//post a review for a movie
-const createReview= (req, res) => {
-  const comment= req.params.comment;
-  const movieid= parseInt(req.params.MovieId);
-  const userid= parseInt(req.params.UserId);
-  const thumb= parseInt(req.params.RatingId);
-  if (comment == null) {          //no comment for this thumb rating
-    `INSERT INTO Review(movieid, userid, ratingid)
-    VALUES ($1, $2, $3)`, [movieid, userid, thumb], (error, results) => {
-    if(error) {
-      throw error
-    }
-  }
-  else {
-    pool.query(
-      `INSERT INTO Review(movieid, userid, ratingid, Comment)
-      VALUES ($1)`, [movieid, userid, ratingid, comment], (error, results) =>
-      if(error) {
-        throw error
-      }
-    )
-  }
-  response.status(201).send(`review for movie ${movieid} created`)
-}
-*/
 
 //input: useful/not useful
 //scores are eith 1 or -1 for good and bad resp.
@@ -265,15 +230,45 @@ const getUserId= (req, res) => {
   )
 }
 
+const getCommentsForMovie= (req, res) => {
+  const movieId = parseInt(req.params.movieId);
+  pool.query(`SELECT Comment
+             FROM Review JOIN Movie ON (movie.id = movieid)
+             WHERE Comment IS NOT NULL AND movieid = $1`,
+             [movieId], (err, results) => {
+               if(error) {
+                 throw error;
+               }
+               res.status(200).json(results.rows);
+             }
+  )
+}
+
+const rateMovie= (req, res) => {
+  const movieId= parseInt(req.params.movieId);
+  const userId= parseInt(req.params.userId);
+  const comment= req.params.comment;
+  const thumb= parseInt(req.params.thumb);
+  pool.query(
+    `INSERT INTO REVIEW(movieid, userid, scoreid, comment)
+     VALUES($1, $2, $3, $4)`, [movieId, userId, thumb, comment], (err, results) => {
+       if(error) {
+        throw error;
+       }
+       res.status(201);
+     }
+  )
+}
+
 module.exports = {
-//  getUsers,
+  getCommentsForMovie,
   serveIndex,
   serveUser,
   getTopRated,      //recent top rated movies
   getRecent,        //recently highly rated movies
   getMovie,         //a single movie in the db
   createUser,
-//  createReview,
+  rateMovie,
   rateComment,
   getSearchResults,
   getAccountInfo,

@@ -21,13 +21,60 @@ html
       br
       b Rating: 
       rating= rating
-      b
-      
-    div(class="divComment")
-      u1
-        li
-          Username
-          br
-          Review
-          br
-          DidUserLike
+      br
+    
+    div(class="userComment")
+      label(class="switch")
+        id="userThumb"
+        input(
+          type="checkbox"
+          onclick="activateSubmitButton()"
+        )
+        span(
+          class="slider"
+        )
+      textarea(
+        rows=5
+        cols=50
+        id="userComment"
+        minlength="1"
+        maxlength="500"
+        placeholder=`(Post a comment on ${movieTitle})`
+        spellcheck=true
+      )
+      br
+      br
+    button(
+      type="button"
+      id="submitReview"
+      disabled="true"
+      onclick="postReview()"
+    )
+    
+    script.
+      function activateSubmitButton() {
+        document.getElementById("submitReview").disabled= false;
+      }
+  
+    script.
+      window.onload= function() {
+        var url= `/comments/${movieId}`;
+        console.log(${url})
+        var xhr= new XMLHttpRequest();
+        xhr.open("GET", `${url}`);
+        xhr.onload= function(e) {
+             // Pavel code here-- retrieved comments should be displayed
+        };
+        xhr.send(null);
+    
+    script.
+      function postReview() {
+        var comment= document.getElementById("userComment").value;
+        var thumb= document.getElementById("userThumb").value;
+        var url= `/comments/${movieId}&${USER}&${thumb}&${comment}`;
+        console.log(${url})
+        var xhr= new XMLHttpRequest();
+        xhr.open("POST", `${url}`);
+        xhr.send();
+        return;
+      }

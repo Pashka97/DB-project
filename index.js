@@ -36,13 +36,14 @@ app.get('/account/:loginInfo', db.getUserId);
 //retrieve a particular movie (as selecting movie from either table)
 app.get('/movieView/:movieId', db.getMovie);
 
+app.get('/comments/:movieId', db.getCommentsForMovie);
+
+app.post('/movieView/:movieId&:userId&:thumb&:comment', db.rateMovie);
 //review stuff
-//app.post('/movieView/:MovieId/:UserId/:RatingId/:comment', db.createReview);
 app.post('/movieView/:score/:id', db.rateComment);
 
 app.set('views', './views');
 app.set('view engine', 'pug');
-
 app.listen(port, () => {
   console.log(`FAMR running on port ${port}.`);
 })
