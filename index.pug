@@ -23,12 +23,11 @@ html
       rating= rating
       br
     
-    div(class="userComment")
-      label(class="switch")
-        id="userThumb"
+    div(class="userReview")
+      label(class="switch" id="userThumb")
         input(
           type="checkbox"
-          onclick="activateSubmitButton()"
+          onclick= 'activateSubmitButton()'
         )
         span(
           class="slider"
@@ -48,33 +47,53 @@ html
       type="button"
       id="submitReview"
       disabled="true"
-      onclick="postReview()"
-    )
+      onclick= 'postReview()'
+    ) Submit Review
     
     script.
-      function activateSubmitButton() {
-        document.getElementById("submitReview").disabled= false;
+     window.onload= function() {
+      window.sessionStorage.setItem('thumb', '-1');
+      var url= `/comments/#{movieId}`;
+      /*
+      
+      var xhr= new XMLHttpRequest();
+      xhr.open("GET", `${url}`);
+      xhr.onload= function(e) {
+           // Pavel code here-- retrieved comments should be displayed
+      };
+      xhr.send(null);
+      
+      */
+     }
+    
+    script.
+      var activateSubmitButton = function() {
+          document.getElementById("submitReview").disabled= false
+          var userThumb= window.sessionStorage.getItem('thumb')
+          window.sessionStorage.setItem('thumb', '' + -1*parseInt(userThumb)) 
       }
-  
+      
     script.
-      window.onload= function() {
-        var url= `/comments/${movieId}`;
-        console.log(${url})
-        var xhr= new XMLHttpRequest();
-        xhr.open("GET", `${url}`);
-        xhr.onload= function(e) {
-             // Pavel code here-- retrieved comments should be displayed
-        };
-        xhr.send(null);
-    
-    script.
-      function postReview() {
-        var comment= document.getElementById("userComment").value;
-        var thumb= document.getElementById("userThumb").value;
-        var url= `/comments/${movieId}&${USER}&${thumb}&${comment}`;
-        console.log(${url})
-        var xhr= new XMLHttpRequest();
-        xhr.open("POST", `${url}`);
-        xhr.send();
-        return;
+      var postReview = function() {
+          var comment= document.getElementById("userComment").value;
+          var userThumb= parseInt(window.sessionStorage.getItem('thumb'));
+          var temp= 6;
+          var url= `/movieView/#{movieId}&${temp}&${userThumb}&${comment}`;
+          var xhr= new XMLHttpRequest();
+          xhr.open("POST", `${url}`);
+          xhr.send();
+          return;
+          
+          
+          /*
+           TODO:
+          misc: user login persistent state
+          test cases (report)
+          
+          make test plan (xinyu)
+          CSS (xinyu)
+          get reviews(pavel)
+          search results (sean)
+          refresh page after submit review (sean)
+          */
       }

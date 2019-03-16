@@ -112,7 +112,6 @@ const createUser = (request, response) => {
 //input: movie searched for
 const getMovie = (req, res) => {
   const id = parseInt(req.params.movieId);
- // console.log(id)
   pool.query(
              `SELECT Title, Year, Genre.Name AS Genre, AgeRating.Rating AS Rating, overallRating
               FROM Movie JOIN Genre ON (genreid = genre.id)
@@ -235,7 +234,7 @@ const getCommentsForMovie= (req, res) => {
   pool.query(`SELECT Comment
              FROM Review JOIN Movie ON (movie.id = movieid)
              WHERE Comment IS NOT NULL AND movieid = $1`,
-             [movieId], (err, results) => {
+             [movieId], (error, results) => {
                if(error) {
                  throw error;
                }
@@ -249,9 +248,10 @@ const rateMovie= (req, res) => {
   const userId= parseInt(req.params.userId);
   const comment= req.params.comment;
   const thumb= parseInt(req.params.thumb);
+  //console.log(thumb);
   pool.query(
     `INSERT INTO REVIEW(movieid, userid, scoreid, comment)
-     VALUES($1, $2, $3, $4)`, [movieId, userId, thumb, comment], (err, results) => {
+     VALUES($1, $2, $3, $4)`, [movieId, userId, thumb, comment], (error, results) => {
        if(error) {
         throw error;
        }
@@ -259,6 +259,16 @@ const rateMovie= (req, res) => {
      }
   )
 }
+
+/*
+$1= movie id
+$2= user's score for the movie
+$3 = user id
+
+UPDATE MOVIE
+SET overallrating = overallrating + (SELECT reputation FROM UserAccount WHERE ID = $3) * $2
+WHERE movie.id = $1
+*/
 
 module.exports = {
   getCommentsForMovie,

@@ -13,12 +13,11 @@ app.use(
 
 //home page (table of top rated/most popular)
 app.get('/', db.serveIndex, db.getRecent, db.getTopRated);
+//retrieve a list of search results as filling in search form
+app.get('/:title&:yearConstraint&:year&:ageRating&:genre&:overallRatingConstraint&:overallRating', db.getSearchResults);
 
 //user signup/login
 app.get('/user', db.serveUser);
-
-//retrieve a list of search results as filling in search form
-app.get('/:title&:yearConstraint&:year&:ageRating&:genre&:overallRatingConstraint&:overallRating', db.getSearchResults);
 
 /****** TEST interface with user ******/
 //app.get('/users', db.getUsers);
@@ -29,17 +28,12 @@ app.post('/account', db.createUser);
 
 //retrieve my account information (am already signed in)
 app.get('/account/:userId', db.getAccountInfo);
-
-//
 app.get('/account/:loginInfo', db.getUserId);
 
-//retrieve a particular movie (as selecting movie from either table)
+//movieView stuff
 app.get('/movieView/:movieId', db.getMovie);
-
 app.get('/comments/:movieId', db.getCommentsForMovie);
-
 app.post('/movieView/:movieId&:userId&:thumb&:comment', db.rateMovie);
-//review stuff
 app.post('/movieView/:score/:id', db.rateComment);
 
 app.set('views', './views');
