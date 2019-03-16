@@ -1,0 +1,31 @@
+
+
+h1
+{
+    margin: 10px;
+}
+
+form
+{
+    background-color: rgb(164, 143, 245);
+    width: 200px;
+    margin: 10px;
+    
+}
+
+p
+{
+    font: Arial;
+}
+
+body
+{
+    /*background-color: rgb(125, 194, 221);*/
+    color: rgb(0, 0, 0);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+button
+{
+    margin-left: 160px;
+}
