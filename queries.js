@@ -127,6 +127,13 @@ const getMovie = (req, res) => {
             })
 }
 
+//all matched
+//title
+//genre, overall rating
+//genre
+//overall rating
+//year
+
 //return list of search results
 const getSearchResults= (req, res) => {
   console.log(req.params);
@@ -172,6 +179,38 @@ const getSearchResults= (req, res) => {
        OR (lower(title) = lower($1)) OR (genre.name = $3 AND overallrating <= $5) OR (genre.name = $3)`
        psqlParams= [title, year, genre, ageRating, overallRating];
   }
+  else if(yearConstraint == '<') {
+    text= `SELECT movie.id as ID, Title, Year, genre, rating as agerating, overallrating
+       FROM Movie JOIN Genre ON (genre.id = genreid)
+                  JOIN agerating ON (agerating.id = ageratingid)
+       WHERE (lower(title) = lower($1) AND year <= $4 AND genre.name= $2 AND agerating.rating= $3)
+       OR (lower(title) = lower($1)) OR (genre.name = $2)`
+       psqlParams= [title, genre, ageRating, year];
+  }
+  else if(yearConstraint == '>') {
+    text= `SELECT movie.id as ID, Title, Year, genre, rating as agerating, overallrating
+       FROM Movie JOIN Genre ON (genre.id = genreid)
+                  JOIN agerating ON (agerating.id = ageratingid)
+       WHERE (lower(title) = lower($1) AND year >= $4 AND genre.name= $2 AND agerating.rating= $3)
+       OR (lower(title) = lower($1)) OR (genre.name = $2)`
+       psqlParams= [title, genre, ageRating, year];
+  }
+  else if(overallRatingConstraint == '<') {
+    text= `SELECT movie.id as ID, Title, Year, genre, rating as agerating, overallrating
+       FROM Movie JOIN Genre ON (genre.id = genreid)
+                  JOIN agerating ON (agerating.id = ageratingid)
+       WHERE (lower(title) = lower($1) AND genre.name= $2 AND agerating.rating= $3 AND overallRating <= $4) 
+       OR (lower(title) = lower($1)) OR (genre.name = $2 AND overallRating <= $4) OR (genre.name = $2)`
+       psqlParams= [title, genre, ageRating, overallRating];
+  }
+  else if(overallRatingConstraint == '>') {
+    text= `SELECT movie.id as ID, Title, Year, genre, rating as agerating, overallrating
+       FROM Movie JOIN Genre ON (genre.id = genreid)
+                  JOIN agerating ON (agerating.id = ageratingid)
+       WHERE (lower(title) = lower($1) AND genre.name= $2 AND agerating.rating= $3 AND overallRating >= $4)
+       OR (lower(title) = lower($1)) OR (genre.name = $2 AND overallRating >= $4) OR (genre.name = $2)`
+       psqlParams= [title, genre, ageRating, overallRating];
+  }
   else {
     text= `SELECT movie.id as ID, Title, Year, genre, rating as agerating, overallrating
        FROM Movie JOIN Genre ON (genre.id = genreid)
@@ -188,7 +227,6 @@ const getSearchResults= (req, res) => {
     }
   )
 }
-
 
 //input: useful/not useful
 //scores are eith 1 or -1 for good and bad resp.

@@ -68,11 +68,13 @@ html
     
     script.
       var activateSubmitButton = function() {
+        /* if getMovieid and getUserid laready in Review table, dont allow submission
+        */
           document.getElementById("submitReview").disabled= false
           var userThumb= window.sessionStorage.getItem('thumb')
           window.sessionStorage.setItem('thumb', '' + -1*parseInt(userThumb)) 
       }
-      
+    
     script.
       var postReview = function() {
           var comment= document.getElementById("userComment").value;
@@ -80,20 +82,24 @@ html
           var temp= 6;
           var url= `/movieView/#{movieId}&${temp}&${userThumb}&${comment}`;
           var xhr= new XMLHttpRequest();
-          xhr.open("POST", `${url}`);
+          xhr.open("POST", `${url}`, true);
           xhr.send();
+          window.alert("Thank you for your review!")
+          document.location.reload(true);
           return;
           
           
           /*
            TODO:
-          misc: user login persistent state
-          test cases (report)
-          
+            misc:
+          user login persistent state
+            need:
+          test cases (all)
+          final report(all)
           make test plan (xinyu)
           CSS (xinyu)
-          get reviews(pavel)
+          get all reviews on movieView(pavel)
+          ability to like/dislike a comment (pavel)
           search results (sean)
-          refresh page after submit review (sean)
           */
       }
