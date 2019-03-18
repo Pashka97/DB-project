@@ -23,10 +23,10 @@
           <option value=">">>=</option>
           <option value="<"><=</option>
       </select>
-         <input type="number" id="year" min="1910" max="2019"><br>
+         <input type="number" id="year" min="1910" max="2019" value="2019"><br>
       Rating:<br>
       <select id="ageRating">
-        <option value="AR_ANY">Any</option>
+<!--        <option value="AR_ANY">Any</option>          -->
         <option value="G">G</option>
         <option value="PG">PG</option>
         <option value="PG13">PG13</option>
@@ -36,7 +36,7 @@
         <br>
       Genre:<br>
       <select id="genre">
-          <option value="G_ANY">Any</option>
+<!--          <option value="G_ANY">Any</option>          -->
           <option value="Action">Action</option>
           <option value="Comedy">Comedy</option>
           <option value="Romance">Romance</option>
@@ -53,7 +53,7 @@
           <option value=">">>=</option>
           <option value="<"><=</option>
       </select>
-        <input type="number" id="compositeScore" min="0" max="100"><br>
+        <input type="number" id="compositeScore" min="0" max="100" value="80"><br>
     </form>
     
     <br>
@@ -61,6 +61,7 @@
     <button style="background-color:rgb(164, 143, 245)" onclick="msearchFunction()">Search</button>
     <script>
         function msearchFunction() {
+            //window.sessionStorage.setItem('key', 'value')
             var name= document.getElementById("movieName").value;
             var yearConstraint= document.getElementById("yearConstraint").value;
             var year= document.getElementById("year").value;

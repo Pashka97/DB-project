@@ -112,7 +112,6 @@ const createUser = (request, response) => {
 //input: movie searched for
 const getMovie = (req, res) => {
   const id = parseInt(req.params.movieId);
- // console.log(id)
   pool.query(
              `SELECT Title, Year, Genre.Name AS Genre, AgeRating.Rating AS Rating, overallRating
               FROM Movie JOIN Genre ON (genreid = genre.id)
@@ -127,6 +126,13 @@ const getMovie = (req, res) => {
                          year: queryRes.year, genre: queryRes.genre, rating: queryRes.rating});
             })
 }
+
+//all matched
+//title
+//genre, overall rating
+//genre
+//overall rating
+//year
 
 //return list of search results
 const getSearchResults= (req, res) => {
@@ -173,6 +179,38 @@ const getSearchResults= (req, res) => {
        OR (lower(title) = lower($1)) OR (genre.name = $3 AND overallrating <= $5) OR (genre.name = $3)`
        psqlParams= [title, year, genre, ageRating, overallRating];
   }
+  else if(yearConstraint == '<') {
+    text= `SELECT movie.id as ID, Title, Year, genre, rating as agerating, overallrating
+       FROM Movie JOIN Genre ON (genre.id = genreid)
+                  JOIN agerating ON (agerating.id = ageratingid)
+       WHERE (lower(title) = lower($1) AND year <= $4 AND genre.name= $2 AND agerating.rating= $3)
+       OR (lower(title) = lower($1)) OR (genre.name = $2)`
+       psqlParams= [title, genre, ageRating, year];
+  }
+  else if(yearConstraint == '>') {
+    text= `SELECT movie.id as ID, Title, Year, genre, rating as agerating, overallrating
+       FROM Movie JOIN Genre ON (genre.id = genreid)
+                  JOIN agerating ON (agerating.id = ageratingid)
+       WHERE (lower(title) = lower($1) AND year >= $4 AND genre.name= $2 AND agerating.rating= $3)
+       OR (lower(title) = lower($1)) OR (genre.name = $2)`
+       psqlParams= [title, genre, ageRating, year];
+  }
+  else if(overallRatingConstraint == '<') {
+    text= `SELECT movie.id as ID, Title, Year, genre, rating as agerating, overallrating
+       FROM Movie JOIN Genre ON (genre.id = genreid)
+                  JOIN agerating ON (agerating.id = ageratingid)
+       WHERE (lower(title) = lower($1) AND genre.name= $2 AND agerating.rating= $3 AND overallRating <= $4) 
+       OR (lower(title) = lower($1)) OR (genre.name = $2 AND overallRating <= $4) OR (genre.name = $2)`
+       psqlParams= [title, genre, ageRating, overallRating];
+  }
+  else if(overallRatingConstraint == '>') {
+    text= `SELECT movie.id as ID, Title, Year, genre, rating as agerating, overallrating
+       FROM Movie JOIN Genre ON (genre.id = genreid)
+                  JOIN agerating ON (agerating.id = ageratingid)
+       WHERE (lower(title) = lower($1) AND genre.name= $2 AND agerating.rating= $3 AND overallRating >= $4)
+       OR (lower(title) = lower($1)) OR (genre.name = $2 AND overallRating >= $4) OR (genre.name = $2)`
+       psqlParams= [title, genre, ageRating, overallRating];
+  }
   else {
     text= `SELECT movie.id as ID, Title, Year, genre, rating as agerating, overallrating
        FROM Movie JOIN Genre ON (genre.id = genreid)
@@ -189,7 +227,6 @@ const getSearchResults= (req, res) => {
     }
   )
 }
-
 
 //input: useful/not useful
 //scores are eith 1 or -1 for good and bad resp.
@@ -235,7 +272,7 @@ const getCommentsForMovie= (req, res) => {
   pool.query(`SELECT Comment
              FROM Review JOIN Movie ON (movie.id = movieid)
              WHERE Comment IS NOT NULL AND movieid = $1`,
-             [movieId], (err, results) => {
+             [movieId], (error, results) => {
                if(error) {
                  throw error;
                }
@@ -249,9 +286,10 @@ const rateMovie= (req, res) => {
   const userId= parseInt(req.params.userId);
   const comment= req.params.comment;
   const thumb= parseInt(req.params.thumb);
+  //console.log(thumb);
   pool.query(
     `INSERT INTO REVIEW(movieid, userid, scoreid, comment)
-     VALUES($1, $2, $3, $4)`, [movieId, userId, thumb, comment], (err, results) => {
+     VALUES($1, $2, $3, $4)`, [movieId, userId, thumb, comment], (error, results) => {
        if(error) {
         throw error;
        }
@@ -259,6 +297,16 @@ const rateMovie= (req, res) => {
      }
   )
 }
+
+/*
+$1= movie id
+$2= user's score for the movie
+$3 = user id
+
+UPDATE MOVIE
+SET overallrating = overallrating + (SELECT reputation FROM UserAccount WHERE ID = $3) * $2
+WHERE movie.id = $1
+*/
 
 module.exports = {
   getCommentsForMovie,

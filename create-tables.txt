@@ -46,10 +46,9 @@ CREATE TABLE Review (
 	UserId INTEGER not null,
 	ScoreId INTEGER,
 	Comment VARCHAR(500),
-	RatingId INTEGER not null,
+	RatingId INTEGER,
 	CONSTRAINT Review_MovieId_fkey FOREIGN KEY (MovieId) REFERENCES Movie (ID),
 	CONSTRAINT Review_UserId_fkey FOREIGN KEY (UserId) REFERENCES UserAccount (ID),
-	CONSTRAINT Review_ScoreId_fkey FOREIGN KEY (ScoreId) REFERENCES Score (ID)
 );
 
 CREATE TABLE Score (
