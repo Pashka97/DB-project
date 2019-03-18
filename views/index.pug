@@ -1,0 +1,158 @@
+html
+  head
+    b Movie Information
+    br
+  body
+    a(href='/') Home
+    br
+    div(class='divMovieInfo')
+      p
+      b Composite Score: 
+      compositeScore= compositeScore
+      br
+      b Title: 
+      movieTitle= movieTitle
+      br
+      b Year: 
+      year= year
+      br
+      b Genre: 
+      genre= genre
+      br
+      b Rating: 
+      rating= rating
+      br
+      p Click checkbox if you liked the movie
+    
+    div(class="userReview")
+      label(class="switch" id="userThumb")
+        input(
+          type="checkbox"
+          onclick= 'activateSubmitButton()'
+        )
+        span(
+          class="slider"
+        )
+      textarea(
+        rows=5
+        cols=50
+        id="userComment"
+        minlength="1"
+        maxlength="500"
+        placeholder=`(Post a comment on ${movieTitle})`
+        spellcheck=true
+      )
+      br
+      br
+    button(
+      type="button"
+      id="submitReview"
+      disabled="true"
+      onclick= 'postReview()'
+    ) Submit Review
+    
+    script.
+     window.onload= function() {
+      window.sessionStorage.setItem('thumb', '-1');
+      var url= `/comments/#{movieId}`;
+      
+      
+      var xhr= new XMLHttpRequest();
+      xhr.open("GET", `${url}`);
+      xhr.onload= function(e) {
+            if (xhr.readyState === 4) {
+                //Pavel code goes here
+                //parse xhr.responseText and add to list
+                if (xhr.status === 200) {
+                    var queryJSON = JSON.parse(xhr.responseText);
+                    console.log(JSON.stringify(queryJSON));
+                    
+                    var ulist = document.getElementById("userComments");
+                    while(ulist.childNodes.length > 0)
+                    {
+                      ulist.removeChild(ulist.childNodes[0]);
+                    }
+                    
+                    var newItem = document.createElement("li");
+                    ulist.appendChild(newItem);
+                    var a = document.createElement("a");
+                    a.textContent = "Reviews";
+                    newItem.appendChild(a);
+                    ulist.appendChild(newItem);
+
+
+                    for(var i = 0; i < queryJSON.length; i++)
+                    {
+                      var movieStr = queryJSON[i].comment;
+
+                      var newItem = document.createElement("li");
+                      newItem.textContent = movieStr;
+                      ulist.appendChild(newItem);
+                      
+                      createButton(newItem, "Click here to upvote", function() {
+                        console.log("upvote comment");
+                      });
+                      ulist.appendChild(newItem);
+                      
+                    }
+                    
+                }
+            }
+      };
+      xhr.onerror= function(e) {
+                console.error(xhr.statusText);
+      };
+      xhr.send(null);
+      
+      
+     }
+    
+    script.
+      var activateSubmitButton = function() {
+        /* if getMovieid and getUserid laready in Review table, dont allow submission
+        */
+          document.getElementById("submitReview").disabled= false
+          var userThumb= window.sessionStorage.getItem('thumb')
+          window.sessionStorage.setItem('thumb', '' + -1*parseInt(userThumb)) 
+      }
+    
+    script.
+      var postReview = function() {
+          var comment= document.getElementById("userComment").value;
+          var userThumb= parseInt(window.sessionStorage.getItem('thumb'));
+          var temp= 6;
+          var url= `/movieView/#{movieId}&${temp}&${userThumb}&${comment}`;
+          var xhr= new XMLHttpRequest();
+          xhr.open("POST", `${url}`, true);
+          xhr.send();
+          window.alert("Thank you for your review!")
+          document.location.reload(true);
+          return;
+          
+          
+          /*
+           TODO:
+            misc:
+          user login persistent state
+            need:
+          test cases (all)
+          final report(all)
+          make test plan (xinyu)
+          CSS (xinyu)
+          get all reviews on movieView(pavel)
+          ability to like/dislike a comment (pavel)
+          search results (sean)
+          */
+      }
+      
+      //code from https://stackoverflow.com/questions/8650975/javascript-to-create-a-button-with-onclick
+      function createButton(context, val, func) {
+        var button = document.createElement("input");
+        button.type = "button";
+        button.value = val;
+        button.onclick = func;
+        context.appendChild(button);
+      }
+      
+    div(class="comments")
+      ul(id="userComments")
