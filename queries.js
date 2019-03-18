@@ -269,7 +269,7 @@ const getUserId= (req, res) => {
 
 const getCommentsForMovie= (req, res) => {
   const movieId = parseInt(req.params.movieId);
-  pool.query(`SELECT Comment, scoreid, userid
+  pool.query(`SELECT Comment, scoreid, userid, ratingid
              FROM Review JOIN Movie ON (movie.id = movieid)
              WHERE Comment IS NOT NULL AND movieid = $1`,
              [movieId], (error, results) => {
