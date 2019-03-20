@@ -2,8 +2,8 @@ CREATE TABLE UserAccount (
 	ID SERIAL PRIMARY KEY,
 	FirstName VARCHAR(20) not null,
 	LastName VARCHAR(30) not null,
-	Email VARCHAR(50) not null,
-	Username VARCHAR(20) not null,
+	Email VARCHAR(50) unique not null,
+	Username VARCHAR(20) unique not null,
 	Password VARCHAR(25) not null,
 	Reputation REAL DEFAULT 0.5
 );
@@ -48,7 +48,7 @@ CREATE TABLE Review (
 	Comment VARCHAR(500),
 	RatingId INTEGER,
 	CONSTRAINT Review_MovieId_fkey FOREIGN KEY (MovieId) REFERENCES Movie (ID),
-	CONSTRAINT Review_UserId_fkey FOREIGN KEY (UserId) REFERENCES UserAccount (ID),
+	CONSTRAINT Review_UserId_fkey FOREIGN KEY (UserId) REFERENCES UserAccount (ID)
 );
 
 CREATE TABLE Score (

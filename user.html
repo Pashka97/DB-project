@@ -22,11 +22,33 @@
    <br>
    <div class="divLogIn">
         <!-- add JS here -->
-    <form action="javascript:handleClick()">
-      User Name: <input type="text" name="uname2"><br>
-      Password: <input type="password" name="pass2"><br>
-      <input type="submit" value="Log In">
+    <form action="javascript:checkLogIn()">
+      User Name: <input type="text" name="uname2" id='username'><br>
+      Password: <input type="password" name="pass2" id='password'><br>
+      <input type="submit" value="Log in">
     </form>
+   <script>
+   function checkLogIn() {
+      const usr= document.getElementById('username').value;
+      const pass= document.getElementById('password').value;
+      url= `/user/${usr}&${pass}`;
+      //console.log(`${url}`);
+      var xhr= new XMLHttpRequest();
+      xhr.open("GET", `${url}`);
+      xhr.onload= function(e) {
+        if (xhr.readyState === 4) {
+          if(xhr.status === 200) {
+            alert(`Successful login as ${usr}`);
+          }
+          else {
+            alert("Unsuccessful login. Try again please");
+          }
+        }
+      }
+      xhr.send(null);
+   }
+   </script>
    </div>
+   
 </body>
 </html>

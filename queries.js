@@ -21,6 +21,25 @@ const serveUser= (req, res) => {
   res.sendFile(path.join(__dirname + '/user.html'));
 }
 
+const validateLogIn= (req, res) => {
+  const usr= req.params.username;
+  const pass= req.params.password;
+  console.log(usr)
+  pool.query(`SELECT password
+             FROM useraccount
+             WHERE username = $1`, [usr], (err, result) => {
+              if(err || usr == null || result.rows[0] == null) {
+                res.status(400).send('error logging in');
+              }
+              else if (result.rows[0].password != pass) {
+                res.status(400).send('error logging in');
+              }
+              else {
+                res.status(200).send(`User ${usr} now logged in`);
+              }
+            })
+}
+
 const getTopRated = (request, response) => {
     http.get("http://api.themoviedb.org/3/movie/popular?api_key=NOTWHATYOURELOOKINGFOR&language=en-US&page=1", (res) => {
     const { statusCode } = res;
@@ -99,13 +118,15 @@ const getRecent = (request, response, next) =>  {
 //input: information of user to be added
 const createUser = (request, response) => {
   const {firstname, lastname, email, username, password} = request.body;
-  console.log(firstname, lastname, email, username, password);
+  //console.log(firstname, lastname, email, username, password);  
   pool.query(`INSERT INTO useraccount (firstname, lastname, email, username, password)
               VALUES ($1, $2, $3, $4, $5)`, [firstname, lastname, email, username, password], (error, results) => {
     if (error) {
-      throw error
+      console.log('username taken')
+      response.status(201).send(`Username ${username} is taken, please try another`);
+    } else {
+      response.status(201).send(`Welcome, ${username}`);
     }
-    response.status(201).send(`Welcome, ${username}`);
   })
 }
 
@@ -321,4 +342,5 @@ module.exports = {
   getSearchResults,
   getAccountInfo,
   getUserId,
+  validateLogIn
 }

@@ -26,7 +26,8 @@ app.get('/user', db.serveUser);
 // /account has a create account/sign in if not isgned in, or a page displaying logged in user info
 app.post('/account', db.createUser);
 
-//retrieve my account information (am already signed in)
+//retrieve my account information
+app.get('/user/:username&:password', db.validateLogIn);
 app.get('/account/:userId', db.getAccountInfo);
 app.get('/account/:loginInfo', db.getUserId);
 

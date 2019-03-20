@@ -22,6 +22,7 @@ html
       b Rating: 
       rating= rating
       br
+      p Click checkbox if you liked the movie
     
     div(class="userReview")
       label(class="switch" id="userThumb")
@@ -54,16 +55,56 @@ html
      window.onload= function() {
       window.sessionStorage.setItem('thumb', '-1');
       var url= `/comments/#{movieId}`;
-      /*
+      
       
       var xhr= new XMLHttpRequest();
       xhr.open("GET", `${url}`);
       xhr.onload= function(e) {
-           // Pavel code here-- retrieved comments should be displayed
+            if (xhr.readyState === 4) {
+                //Pavel code goes here
+                //parse xhr.responseText and add to list
+                if (xhr.status === 200) {
+                    var queryJSON = JSON.parse(xhr.responseText);
+                    console.log(JSON.stringify(queryJSON));
+                    
+                    var ulist = document.getElementById("userComments");
+                    while(ulist.childNodes.length > 0)
+                    {
+                      ulist.removeChild(ulist.childNodes[0]);
+                    }
+                    
+                    var newItem = document.createElement("li");
+                    ulist.appendChild(newItem);
+                    var a = document.createElement("a");
+                    a.textContent = "Reviews";
+                    newItem.appendChild(a);
+                    ulist.appendChild(newItem);
+
+
+                    for(var i = 0; i < queryJSON.length; i++)
+                    {
+                      var movieStr = queryJSON[i].comment;
+
+                      var newItem = document.createElement("li");
+                      newItem.textContent = movieStr;
+                      ulist.appendChild(newItem);
+                      
+                      createButton(newItem, "Click here to upvote", function() {
+                        console.log("upvote comment");
+                      });
+                      ulist.appendChild(newItem);
+                      
+                    }
+                    
+                }
+            }
+      };
+      xhr.onerror= function(e) {
+                console.error(xhr.statusText);
       };
       xhr.send(null);
       
-      */
+      
      }
     
     script.
@@ -79,8 +120,8 @@ html
       var postReview = function() {
           var comment= document.getElementById("userComment").value;
           var userThumb= parseInt(window.sessionStorage.getItem('thumb'));
-          var temp= 6;
-          var url= `/movieView/#{movieId}&${temp}&${userThumb}&${comment}`;
+          var anonAccount= 1;     //not logged in user posting review
+          var url= `/movieView/#{movieId}&${anonAccount}&${userThumb}&${comment}`;
           var xhr= new XMLHttpRequest();
           xhr.open("POST", `${url}`, true);
           xhr.send();
@@ -103,3 +144,15 @@ html
           search results (sean)
           */
       }
+      
+      //code from https://stackoverflow.com/questions/8650975/javascript-to-create-a-button-with-onclick
+      function createButton(context, val, func) {
+        var button = document.createElement("input");
+        button.type = "button";
+        button.value = val;
+        button.onclick = func;
+        context.appendChild(button);
+      }
+      
+    div(class="comments")
+      ul(id="userComments")
