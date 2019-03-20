@@ -22,7 +22,7 @@ VALUES (1, 'Captain Marvel', 2019, 6, 3, 0),
        (4, 'Pet', 2017, 2, 1, 70),
        (5, 'The Bourne Identity', 2002, 1, 2, 80),
        (6, 'Time Rush', 2016, 1, 1, 70),
-       (7, 'Time Rush', 2016, 4, 1, 70),
+       (7, 'American Pie', 2005, 4, 1, 70),
        (8, 'Robo-Dog', 2016, 6, 1, 70),
        (9, 'The Forest', 2016, 5, 3, 60),
        (10, 'The Choice', 2016, 3, 2, 60),
@@ -67,4 +67,4 @@ VALUES (1, 1, 1, 2, 'Good CGI, no real character development, went in too many d
        (2, 1, 5, 2, 'Did not enjoy the movie', 5),
        (3, 24, 2, 1, 'What a fantastic children''s movie! Highly recommend to everyone', 11),
        (4, 24, 3, 2, 'Waste of time', -30),
-       (5, 30, 4, 1, 'Great adult film, not enough of these being made these days', 0);
+(5, 30, 4, 1, 'Great adult film, not enough of these being made these days', 0);
